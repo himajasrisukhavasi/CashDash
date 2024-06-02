@@ -4,7 +4,7 @@ from flask_mysqldb import MySQL
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '952003'
+app.config['MYSQL_PASSWORD'] = 'My_Sql101'
 app.config['MYSQL_DB'] = 'Cash_Dash'
 mysql = MySQL(app)
 
@@ -15,11 +15,15 @@ def sign_up():
             signUpDetails = request.form
             username = signUpDetails.get('username')
             password = signUpDetails.get('password')
+            name = signUpDetails.get('name')
+            email = signUpDetails.get('email')
+            address = signUpDetails.get('address')
+            phone_no = signUpDetails.get('phone_no')
             cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO sign_up(username, password) VALUES (%s, %s)", (username, password))
+            cur.execute("INSERT INTO sign_up(username,password,name,email,address,phone_no) VALUES (%s, %s,%s,%s,%s,%s)", (username, password,name,email,address,phone_no))
             mysql.connection.commit()
             cur.close()
-            return redirect(url_for('user_deets', username=username))
+            #return redirect(url_for('user_deets', username=username))
         elif 'login' in request.form:
             loginDetails = request.form
             username = loginDetails.get('username')
@@ -35,21 +39,6 @@ def sign_up():
 
     return render_template('sign_up.html')
 
-@app.route('/user_deets', methods=['GET', 'POST'])
-def user_deets():
-    if request.method == 'POST':
-        userDeetsDetails = request.form
-        username = userDeetsDetails.get('username')
-        name = userDeetsDetails.get('name')
-        email = userDeetsDetails.get('email')
-        address = userDeetsDetails.get('address')
-        phoneno = userDeetsDetails.get('phoneno')
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO user_deets(username, name, email, address, phone_no) VALUES (%s, %s, %s, %s, %s)", (username, name, email, address, phoneno))
-        mysql.connection.commit()
-        cur.close()
-        return 'Success'
-    return render_template('user_deets.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
